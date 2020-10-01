@@ -2,7 +2,7 @@
 #define AARDVARK_GPIO_HPP_
 
 #include "base.hpp"
-#include "vendor/ardvark.h" // TODO: refactor so this isn't necessary
+#include "vendor/aardvark.h" // TODO: refactor so this isn't necessary
 #include <cassert>
 #include <driver/gpio.hpp>
 
