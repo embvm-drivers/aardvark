@@ -1,7 +1,6 @@
 #ifndef AARDVARK_BASE_HPP_
 #define AARDVARK_BASE_HPP_
 
-#include <aardvark.h>
 #include <array>
 #include <atomic>
 #include <driver/driver.hpp>
@@ -16,8 +15,10 @@ namespace embdrv
 inline constexpr size_t AARDVARK_IO_COUNT = 6;
 
 /// aardvark IO pin IDs
-inline constexpr static std::array<uint8_t, AARDVARK_IO_COUNT> aardvarkIO = {
-	AA_GPIO_SCL, AA_GPIO_SDA, AA_GPIO_MISO, AA_GPIO_SCK, AA_GPIO_MOSI, AA_GPIO_SS};
+/// Extracted from vendor/aardvark.h, but we re-define the values to
+/// prevent needing to include the header unnecessarily.
+inline constexpr static std::array<uint8_t, AARDVARK_IO_COUNT> aardvarkIO = {0x01, 0x02, 0x04,
+																			 0x08, 0x10, 0x20};
 
 /// Aardvark master operational modes
 enum class aardvarkMode
