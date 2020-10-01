@@ -1,4 +1,4 @@
-#include "spi.hpp"
+#include <aardvark/spi.hpp>
 #include "vendor/aardvark.h"
 #include <vector>
 

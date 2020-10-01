@@ -1,4 +1,4 @@
-#include "i2c.hpp"
+#include <aardvark/i2c.hpp>
 #include "vendor/aardvark.h"
 
 using namespace embdrv;
