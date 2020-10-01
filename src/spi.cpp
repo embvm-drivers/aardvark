@@ -1,5 +1,5 @@
-#include <aardvark/spi.hpp>
 #include "vendor/aardvark.h"
+#include <aardvark/spi.hpp>
 #include <vector>
 
 using namespace embdrv;

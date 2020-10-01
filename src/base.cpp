@@ -1,5 +1,5 @@
-#include <aardvark/base.hpp>
 #include "vendor/aardvark.h"
+#include <aardvark/base.hpp>
 #include <cassert>
 
 #if 0

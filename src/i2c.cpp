@@ -1,5 +1,5 @@
-#include <aardvark/i2c.hpp>
 #include "vendor/aardvark.h"
+#include <aardvark/i2c.hpp>
 
 using namespace embdrv;
 
