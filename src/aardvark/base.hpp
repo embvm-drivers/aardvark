@@ -57,45 +57,18 @@ enum class aardvarkMode
 class aardvarkAdapter final : public embvm::DriverBase
 {
   public:
-	/** Create a generic aardvark Adapter
+	/** Create an aardvark Adapter controller
 	 *
 	 * @param m The aardvark adapter mode.
 	 * @param USBPort The id of the USB port the aardvarkAdapter is connected to.
 	 */
 	explicit aardvarkAdapter(aardvarkMode m = aardvarkMode::SpiI2C, uint8_t USBPort = 0) noexcept
-		: embvm::DriverBase("Aardvark I2C/SPI Adapter", embvm::DriverType::Undefined),
-		  port_(USBPort), mode_(m)
-	{
-	}
-
-	/** Create an aardvarkAdapter with a name
-	 *
-	 * @param name The name for the aardvarkAdapter driver.
-	 * @param m The aardvark adapter mode.
-	 * @param USBPort The id of the USB port the aardvarkAdapter is connected to.
-	 */
-	explicit aardvarkAdapter(const char* name, aardvarkMode m = aardvarkMode::SpiI2C,
-							 uint8_t USBPort = 0) noexcept
-		: embvm::DriverBase(name, embvm::DriverType::Undefined), port_(USBPort), mode_(m)
-	{
-	}
-
-	/// @overload aardvarkAdapter(const char* name, aardvarkMode m, uint8_t USBPort)
-	explicit aardvarkAdapter(const std::string& name, aardvarkMode m = aardvarkMode::SpiI2C,
-							 uint8_t USBPort = 0) noexcept
-		: embvm::DriverBase(name, embvm::DriverType::Undefined), port_(USBPort), mode_(m)
-	{
-	}
-
-	/// @overload aardvarkAdapter(const char* name, aardvarkMode m, uint8_t USBPort)
-	explicit aardvarkAdapter(const std::string_view& name, aardvarkMode m = aardvarkMode::SpiI2C,
-							 uint8_t USBPort = 0) noexcept
-		: embvm::DriverBase(name, embvm::DriverType::Undefined), port_(USBPort), mode_(m)
+		: embvm::DriverBase(embvm::DriverType::Undefined), port_(USBPort), mode_(m)
 	{
 	}
 
 	/// Default destructor
-	~aardvarkAdapter() noexcept override = default;
+	~aardvarkAdapter() noexcept = default;
 
 	/// Change the Aardvark Adapter's operational mode.
 	/// @param m The desired aardvark operational mode.

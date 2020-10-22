@@ -31,27 +31,14 @@ class aardvarkI2CMaster final
 	using storagePair_t = std::pair<embvm::i2c::op_t, const embvm::i2c::master::cb_t>;
 
   public:
-	/** Construct a generic I2C master
+	/** Construct an Aardvark I2C master
 	 *
 	 * @param base_driver The aardvarkAdapter instance associated with this driver.
 	 */
-	explicit aardvarkI2CMaster(aardvarkAdapter& base_driver) noexcept
-		: embvm::i2c::master("Aardvark I2C (Master)"), base_driver_(base_driver)
-	{
-	}
-
-	/** Construct a named I2C master
-	 *
-	 * @param base_driver The aardvarkAdapter instance associated with this driver.
-	 * @param name The name of the driver.
-	 */
-	explicit aardvarkI2CMaster(aardvarkAdapter& base_driver, const char* name) noexcept
-		: embvm::i2c::master(name), base_driver_(base_driver)
-	{
-	}
+	explicit aardvarkI2CMaster(aardvarkAdapter& base_driver) noexcept : base_driver_(base_driver) {}
 
 	/// Default destructor
-	~aardvarkI2CMaster() noexcept final;
+	~aardvarkI2CMaster() noexcept;
 
 	/// Active object process function
 	void process_(const storagePair_t& op) noexcept;
