@@ -163,7 +163,7 @@ static int _getExecPath(char* path, unsigned long maxlen)
 
 #ifdef DARWIN
 	_NSGetExecutablePath(path, &maxlen);
-	return maxlen;
+	return (int)maxlen;
 #endif
 }
 
