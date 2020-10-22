@@ -38,16 +38,6 @@ class aardvarkGPIOInput final : public embvm::gpio::input<TPull>
 		assert(TPinID < AARDVARK_IO_COUNT && "Invalid ID");
 	}
 
-	/** Construct an named GPIO Input for the Aardvark adapter
-	 *
-	 * @param master The aardvarkAdapter instance associated with this GPIO pin.
-	 * @param name The name of the GPIO pin
-	 */
-	explicit aardvarkGPIOInput(aardvarkAdapter& master) noexcept : master_(master)
-	{
-		assert(TPinID < AARDVARK_IO_COUNT && "Invalid ID");
-	}
-
 	/// Default Destructor
 	~aardvarkGPIOInput() noexcept = default;
 
@@ -116,29 +106,17 @@ template<uint8_t TPinID>
 class aardvarkGPIOOutput : public embvm::gpio::output
 {
   public:
-	/** Construct a generic GPIO output
+	/** Construct an Aardvark GPIO output
 	 *
 	 * @param master The aardvarkAdapter instance associated with this GPIO pin.
 	 */
-	explicit aardvarkGPIOOutput(aardvarkAdapter& master) noexcept
-		: embvm::gpio::output("Aardvark GPIO"), master_(master)
-	{
-		assert(TPinID < AARDVARK_IO_COUNT && "Invalid ID");
-	}
-
-	/** Construct a named GPIO output
-	 *
-	 * @param master The aardvarkAdapter instance associated with this GPIO pin.
-	 * @param name The name of the GPIO pin
-	 */
-	explicit aardvarkGPIOOutput(aardvarkAdapter& master, const char* name) noexcept
-		: embvm::gpio::output(name), master_(master)
+	explicit aardvarkGPIOOutput(aardvarkAdapter& master) noexcept : master_(master)
 	{
 		assert(TPinID < AARDVARK_IO_COUNT && "Invalid ID");
 	}
 
 	/// Default destructor
-	~aardvarkGPIOOutput() noexcept final = default;
+	~aardvarkGPIOOutput() noexcept = default;
 
 	void set(bool v) noexcept final
 	{
