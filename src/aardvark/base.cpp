@@ -131,7 +131,7 @@ void aardvarkAdapter::setGPIOMode(uint8_t pin, embvm::gpio::mode m) noexcept
 	// Only modes supported by Aardvark
 	assert(m == embvm::gpio::mode::output || m == embvm::gpio::mode::input);
 	assert(pin < AARDVARK_IO_COUNT);
-	assert(embvm::DriverBase::started());
+	assert(started());
 
 	uint8_t pin_mask_ = aardvarkIO[pin];
 
@@ -153,7 +153,7 @@ void aardvarkAdapter::setGPIOMode(uint8_t pin, embvm::gpio::mode m) noexcept
 void aardvarkAdapter::setGPIOOutput(uint8_t pin, bool v) noexcept
 {
 	assert(pin < AARDVARK_IO_COUNT);
-	assert(embvm::DriverBase::started());
+	assert(started());
 	uint8_t pin_mask_ = aardvarkIO[pin];
 
 	lock();
@@ -176,7 +176,7 @@ void aardvarkAdapter::setGPIOOutput(uint8_t pin, bool v) noexcept
 bool aardvarkAdapter::readGPIO(uint8_t pin) noexcept
 {
 	assert(pin < AARDVARK_IO_COUNT);
-	assert(embvm::DriverBase::started());
+	assert(started());
 
 	lock();
 	int set = aa_gpio_get(handle_);
