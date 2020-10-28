@@ -12,6 +12,12 @@
 
 using namespace embdrv;
 
+/// aardvark IO pin IDs
+/// Extracted from vendor/aardvark.h, but we re-define the values to
+/// prevent needing to include the header unnecessarily.
+inline constexpr static std::array<uint8_t, AARDVARK_IO_COUNT> aardvarkIO = {0x01, 0x02, 0x04,
+																			 0x08, 0x10, 0x20};
+
 void aardvarkAdapter::start_() noexcept
 {
 	started_refcnt_++;
@@ -117,5 +123,66 @@ void aardvarkAdapter::pullup(uint8_t id, bool en) noexcept
 	int r = aa_gpio_pullup(handle_, pullup_mask_);
 	unlock();
 
-	assert(r == AA_OK && "Failure to set pullup");
+	assert(r == AA_OK); // Failure to set pullup
+}
+
+void aardvarkAdapter::setGPIOMode(uint8_t pin, embvm::gpio::mode m) noexcept
+{
+	// Only modes supported by Aardvark
+	assert(m == embvm::gpio::mode::output || m == embvm::gpio::mode::input);
+	assert(pin < AARDVARK_IO_COUNT);
+	assert(embvm::DriverBase::started());
+
+	uint8_t pin_mask_ = aardvarkIO[pin];
+
+	lock();
+	if(m == embvm::gpio::mode::output)
+	{
+		direction_mask_ |= pin_mask_;
+	}
+	else
+	{
+		direction_mask_ &= ~pin_mask_;
+	}
+
+	int r = aa_gpio_direction(handle_, direction_mask_);
+	unlock();
+	assert(r == AA_OK); // failure to change direction
+}
+
+void aardvarkAdapter::setGPIOOutput(uint8_t pin, bool v) noexcept
+{
+	assert(pin < AARDVARK_IO_COUNT);
+	assert(embvm::DriverBase::started());
+	uint8_t pin_mask_ = aardvarkIO[pin];
+
+	lock();
+
+	if(v)
+	{
+		output_mask_ |= pin_mask_;
+	}
+	else
+	{
+		output_mask_ &= ~pin_mask_;
+	}
+
+	int r = aa_gpio_set(handle_, output_mask_);
+	unlock();
+
+	assert(r == AA_OK); // failure to change direction
+}
+
+bool aardvarkAdapter::readGPIO(uint8_t pin) noexcept
+{
+	assert(pin < AARDVARK_IO_COUNT);
+	assert(embvm::DriverBase::started());
+
+	lock();
+	int set = aa_gpio_get(handle_);
+	unlock();
+
+	assert(set > AA_OK);
+
+	return set & aardvarkIO[pin];
 }

@@ -4,6 +4,7 @@
 #include <array>
 #include <atomic>
 #include <driver/driver.hpp>
+#include <driver/gpio.hpp>
 #include <mutex>
 
 namespace embdrv
@@ -13,12 +14,6 @@ namespace embdrv
 
 /// The number of IO pins supported by the AARDVARK sensor
 inline constexpr size_t AARDVARK_IO_COUNT = 6;
-
-/// aardvark IO pin IDs
-/// Extracted from vendor/aardvark.h, but we re-define the values to
-/// prevent needing to include the header unnecessarily.
-inline constexpr static std::array<uint8_t, AARDVARK_IO_COUNT> aardvarkIO = {0x01, 0x02, 0x04,
-																			 0x08, 0x10, 0x20};
 
 /// Aardvark master operational modes
 enum class aardvarkMode
@@ -129,6 +124,35 @@ class aardvarkAdapter final : public embvm::DriverBase
 	/// @param en True enables a pullup, false disables it.
 	void pullup(uint8_t id, bool en) noexcept;
 
+	/// Configure a pin as a GPIO input or output
+	///
+	/// @precondition Aardvark base class is started
+	/// @precondition pin is an integer < AARDVARK_IO_COUNT
+	///
+	/// @param [in] pin The pin to set
+	/// @param [in] m The GPIO mode to set the pin to (input/output)
+	void setGPIOMode(uint8_t pin, embvm::gpio::mode m) noexcept;
+
+	/// Set GPIO output
+	///
+	/// @precondition Aardvark base class is started
+	/// @precondition pin is an integer < AARDVARK_IO_COUNT
+	/// @postcondition GPIO mode for the pin is set to output
+	///
+	/// @param [in] pin The pin to set
+	/// @param [in] v The pin output state; high = true, low = false
+	void setGPIOOutput(uint8_t pin, bool v) noexcept;
+
+	/// Read the current GPIO state
+	///
+	/// @preconditon Aardvark base class is started
+	/// @preconditoin pin is an integer < AARDVARK_IO_COUNT
+	/// @preconditoin pin is set to input
+	///
+	/// @param [in] pin The pin to read
+	/// @returns The current state of the pin
+	bool readGPIO(uint8_t pin) noexcept;
+
   private:
 	void start_() noexcept final;
 	void stop_() noexcept final;
@@ -153,6 +177,12 @@ class aardvarkAdapter final : public embvm::DriverBase
 	/// Since multiple client drivers can be created, we don't want to stop the
 	/// aardvarkAdapter base until all client drivers have been stopped.
 	std::atomic<int> started_refcnt_ = 0;
+
+	/// Bitmask for GPIO input/output directions
+	uint8_t direction_mask_ = 0;
+
+	/// Bitmask for GPIO output settings
+	uint8_t output_mask_ = 0;
 };
 
 /// @}

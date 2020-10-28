@@ -1,9 +1,10 @@
 # Aardvark adapter Driver Build Definitions
 
 aardvark_driver_files = files(
-	'base.cpp',
-	'i2c.cpp',
-	'spi.cpp',
+	'aardvark/base.cpp',
+	'aardvark/i2c.cpp',
+	'aardvark/spi.cpp',
+	'aardvark/gpio.cpp'
 )
 
 aardvark_vendor_include = include_directories('vendor', is_system: true)

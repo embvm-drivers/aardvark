@@ -2,152 +2,70 @@
 #define AARDVARK_GPIO_HPP_
 
 #include "base.hpp"
-#include "vendor/aardvark.h" // TODO: refactor so this isn't necessary
-#include <cassert>
 #include <driver/gpio.hpp>
 
 namespace embdrv
 {
-/** Aardvark GPIO Input driver
+/** Aardvark GPIO driver
  *
- * Create a GPIO input driver using the Aardvark adapter.
+ * Create a GPIO instance using the Aardvark adapter.
  *
- * This driver requires an aardvarkAdapter to work. The aardvark adapter must be
- * configured with aardvarkMode::GpioI2C, aardvarkMode::SpiGpio, or aardvarkMode::GpioOnly.
+ * This driver requires an aardvarkAdapter to work.
  *
- * @code
- * embdrv::aardvarkAdapter aardvark{embdrv::aardvarkMode::GpioI2C};
- * embdrv::aardvarkGPIOInput<4> gpio4{aardvark};
- * embdrv::aardvarkGPIOInput<3> gpio3{aardvark};
- * @endcode
- *
- * @tparam TPinID The aardvark pin ID to use as a GPIO Input. Must be less than AARDVARK_IO_COUNT.
- * @tparam TPull The pull setting to use with this GPIO.
- * @ingroup AardvarkDrivers
- */
-template<uint8_t TPinID, embvm::gpio::pull TPull = embvm::gpio::pull::none>
-class aardvarkGPIOInput final : public embvm::gpio::input<TPull>
-{
-  public:
-	/** Construct a generic GPIO input
-	 *
-	 * @param master The aardvarkAdapter instance associated with this GPIO pin.
-	 */
-	explicit aardvarkGPIOInput(aardvarkAdapter& master) noexcept : master_(master)
-	{
-		assert(TPinID < AARDVARK_IO_COUNT && "Invalid ID");
-	}
-
-	/// Default Destructor
-	~aardvarkGPIOInput() noexcept = default;
-
-	bool get() noexcept final
-	{
-		bool set = false;
-
-		if(embvm::DriverBase::started())
-		{
-			master_.lock();
-			set = aa_gpio_get(master_.handle()) & aardvarkIO[TPinID];
-			master_.unlock();
-		}
-
-		return set;
-	}
-
-  private:
-	void start_() noexcept final
-	{
-		master_.start();
-
-		if(master_.mode() != aardvarkMode::GpioI2C)
-		{
-			master_.i2cPullups(false);
-		}
-
-		pull_(TPull);
-	}
-
-	void stop_() noexcept final
-	{
-		master_.stop();
-	}
-
-	embvm::gpio::pull pull_(embvm::gpio::pull p) noexcept final
-	{
-		assert(p != embvm::gpio::pull::pulldown && "Aardvark adapter does not support pulldowns\n");
-
-		master_.pullup(TPinID, p == embvm::gpio::pull::pullup ? true : false);
-
-		return p;
-	}
-
-  private:
-	/// The aardvarkAdapter instance associated with this GPIO input.
-	aardvarkAdapter& master_;
-};
-
-/** Aardvark GPIO Output driver
- *
- * Create a GPIO output driver using the Aardvark adapter.
- *
- * This driver requires an aardvarkAdapter to work. The aardvark adapter must be
- * configured with aardvarkMode::GpioI2C, aardvarkMode::SpiGpio, or aardvarkMode::GpioOnly.
+ * @precondition The aardvark adapter must be configured with aardvarkMode::GpioI2C,
+ * 	aardvarkMode::SpiGpio, or aardvarkMode::GpioOnly.
  *
  * @code
  * embdrv::aardvarkAdapter aardvark{embdrv::aardvarkMode::GpioI2C};
- * embdrv::aardvarkGPIOOutput<5> gpio5{aardvark};
+ * embdrv::aardvarkGPIO gpio5{aardvark, 5};
  * @endcode
  *
- * @tparam TPinID The aardvark pin ID to use as a GPIO output. Must be less than AARDVARK_IO_COUNT.
  * @ingroup AardvarkDrivers
  */
-template<uint8_t TPinID>
-class aardvarkGPIOOutput : public embvm::gpio::output
+class aardvarkGPIO final : public embvm::gpio::base
 {
   public:
-	/** Construct an Aardvark GPIO output
+	/** Construct an Aardvark GPIO
 	 *
-	 * @param master The aardvarkAdapter instance associated with this GPIO pin.
+	 * @param [in] master The aardvarkAdapter instance associated with this GPIO pin.
+	 * @param [in] pin The integral representation of Aardvark pin, between (0..5)
 	 */
-	explicit aardvarkGPIOOutput(aardvarkAdapter& master) noexcept : master_(master)
-	{
-		assert(TPinID < AARDVARK_IO_COUNT && "Invalid ID");
-	}
+	explicit aardvarkGPIO(aardvarkAdapter& master, uint8_t pin) noexcept;
+
+	/** Construct an Aardvark GPIO
+	 *
+	 * @param [in] master The aardvarkAdapter instance associated with this GPIO pin.
+	 * @param [in] pin The integral representation of Aardvark pin, between (0..5)
+	 * @param [in] mode The GPIO mode to use with this pin.
+	 */
+	explicit aardvarkGPIO(aardvarkAdapter& master, uint8_t pin, embvm::gpio::mode mode) noexcept;
 
 	/// Default destructor
-	~aardvarkGPIOOutput() noexcept = default;
+	~aardvarkGPIO() noexcept = default;
 
-	void set(bool v) noexcept final
-	{
-		if(embvm::DriverBase::started())
-		{
-			master_.lock();
-			int r = aa_gpio_set(master_.handle(), v ? aardvarkIO[TPinID] : 0);
-			master_.unlock();
-			assert(r == AA_OK && "Error setting GPIO");
-		}
-	}
+	void set(bool v) noexcept final;
+	bool get() noexcept final;
+	void toggle() noexcept final;
+	void setMode(embvm::gpio::mode mode) noexcept final;
+	embvm::gpio::mode mode() noexcept final;
 
   private:
-	void start_() noexcept final
-	{
-		master_.start();
-
-		master_.lock();
-		int r = aa_gpio_direction(master_.handle(), aardvarkIO[TPinID]);
-		master_.unlock();
-		assert(r == AA_OK && "Error setting GPIO Direction");
-	}
-
-	void stop_() noexcept final
-	{
-		master_.stop();
-	}
+	void start_() noexcept final;
+	void stop_() noexcept final;
 
   private:
 	/// The aardvarkAdapter instance associated with this GPIO output.
 	aardvarkAdapter& master_;
+
+	/// Integral pin number for this GPIO instance.
+	const uint8_t pin_;
+
+	/// Currently configured GPIO mode
+	embvm::gpio::mode mode_;
+
+	/// Currently configured output state (high/low)
+	/// A toggle API isn't provided, so we manually track this for the toggle() implementation.
+	bool output_ = false;
 };
 
 } // namespace embdrv
