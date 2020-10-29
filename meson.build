@@ -12,7 +12,7 @@ project('aardvark-drivers',
 		'cpp_std=c++17', 'build.cpp_std=c++17',
 	],
 	meson_version: '>=0.56.0',
-	version: '0.1'
+	version: '0.9'
 )
 
 ################################
