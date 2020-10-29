@@ -146,8 +146,8 @@ class aardvarkAdapter final : public embvm::DriverBase
 	/// Read the current GPIO state
 	///
 	/// @preconditon Aardvark base class is started
-	/// @preconditoin pin is an integer < AARDVARK_IO_COUNT
-	/// @preconditoin pin is set to input
+	/// @precondition pin is an integer < AARDVARK_IO_COUNT
+	/// @precondition pin is set to input
 	///
 	/// @param [in] pin The pin to read
 	/// @returns The current state of the pin
