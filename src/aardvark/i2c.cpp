@@ -1,3 +1,6 @@
+// Copyright 2020 Embedded Artistry LLC
+// SPDX-License-Identifier: MIT
+
 #include "vendor/aardvark.h"
 #include <aardvark/i2c.hpp>
 

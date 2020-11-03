@@ -1,3 +1,6 @@
+// Copyright 2020 Embedded Artistry LLC
+// SPDX-License-Identifier: MIT
+
 #ifndef AARDVARK_GPIO_HPP_
 #define AARDVARK_GPIO_HPP_
 

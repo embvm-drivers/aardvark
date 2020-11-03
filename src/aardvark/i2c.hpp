@@ -1,3 +1,6 @@
+// Copyright 2020 Embedded Artistry LLC
+// SPDX-License-Identifier: MIT
+
 #ifndef AARDVARK_I2C_DRIVER_HPP_
 #define AARDVARK_I2C_DRIVER_HPP_
 

@@ -1,3 +1,6 @@
+// Copyright 2020 Embedded Artistry LLC
+// SPDX-License-Identifier: MIT
+
 #ifndef AARDVARK_SPI_DRIVER_HPP_
 #define AARDVARK_SPI_DRIVER_HPP_
 
