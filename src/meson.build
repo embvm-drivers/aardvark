@@ -25,7 +25,8 @@ aardvark_native = static_library('aardvark_native',
 		framework_include_dep,
 		framework_native_include_dep
 	],
-	native: true
+	native: true,
+	build_by_default: meson.is_subproject() == false
 )
 
 clangtidy_files += aardvark_driver_files
