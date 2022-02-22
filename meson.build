@@ -120,7 +120,7 @@ subdir('build/test/catch2')
 ################
 
 aardvark_vendor_native_driver_dep = declare_dependency(
-	link_with: aardvark_native,
+	link_with: aardvark_vendor_native,
 	include_directories: aardvark_vendor_include
 )
 
