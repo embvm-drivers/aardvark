@@ -16,6 +16,7 @@ aardvark_vendor_native = static_library('aardvark_vendor_native',
 	c_args: [
 		'-DAARDVARK_LIBRARY_PATH="' + aardvark_library_loc + '"'
 	],
+	native: true
 )
 
 aardvark_native = static_library('aardvark_native',
