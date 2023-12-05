@@ -8,7 +8,29 @@ aardvark_driver_files = files(
 )
 
 aardvark_vendor_include = include_directories('vendor', is_system: true)
-aardvark_library_loc = meson.current_source_dir() + '/vendor'
+aardvark_library_base = meson.current_source_dir() + '/vendor'
+
+if build_machine.system() == 'darwin'
+	if build_machine.cpu_family() == 'aarch64'
+		aardvark_library_loc = aardvark_library_base + '/mac-arm64'
+		message('Linking Mac ARM64 Aardvark Library')
+	elif build_machine.cpu_family() == 'x86_64'
+		aardvark_library_loc = aardvark_library_base + '/mac-x86_64'
+		message('Linking Mac x86_64 Aardvark Library')
+	else
+		error('Unexpected MacOS CPU Architecture: ' + build_machine.cpu_family())
+	endif
+elif build_machine.system() == 'linux'
+	if build_machine.cpu_family() == 'x86_64'
+		aardvark_library_loc = aardvark_library_base + '/linux-x86_64'
+		message('Linking Linux x86_64 Aardvark Library')
+	else
+		error('Unexpected Linux CPU Architecture: ' + build_machine.cpu_family())
+	endif
+else
+	error('This repository does not currently support ' + build_machine.system())
+endif
+
 
 aardvark_vendor_native = static_library('aardvark_vendor_native',
 	sources: files('vendor/aardvark.c'),
