@@ -86,7 +86,6 @@ subdir('meson/compiler/check-and-apply-flags')
 # Include reusable build modules here via subdir() calls
 subdir('meson/linker/linker-script-as-property')
 subdir('meson/linker/linker-map')
-subdir('meson/test/cmocka')
 subdir('meson/objcopy')
 
 ###############
@@ -105,15 +104,8 @@ framework_native_include_dep = embvm_core_subproject.get_variable('framework_nat
 
 # Add files to this variable if you want them analyzed by clang-tidy
 clangtidy_files = []
-# Add dependencies to this array for testing with Catch2
-catch2_tests_dep = []
 
 subdir('src')
-subdir('test')
-
-# Defined after src and test so catch2_dep is fully populated
-# when creating the built-in targets
-subdir('meson/test/catch2')
 
 ################
 # Dependencies #
